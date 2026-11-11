@@ -1,0 +1,62 @@
+name: Mettre à jour les projets
+
+on:
+  # Lancement manuel : onglet Actions → « Mettre à jour les projets » → Run workflow
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Tout régénérer (captures et icônes), même les projets inchangés"
+        type: boolean
+        default: false
+  # Chaque jour, pour détecter les nouveaux projets et les mises à jour
+  schedule:
+    - cron: "17 5 * * *"
+  # Quand la configuration ou le script changent
+  push:
+    paths:
+      - projects.config.json
+      - scripts/**
+      - package.json
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-projects
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Installer Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Générer captures, icônes et projects.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: node scripts/build-projects.mjs
+
+      - name: Enregistrer les changements
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A projects.json shots icons/projects
+          if git diff --cached --quiet; then
+            echo "Rien à mettre à jour."
+          else
+            git commit -m "Mise à jour des projets"
+            git push
+          fi
