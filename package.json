@@ -1,0 +1,15 @@
+{
+  "name": "mes-projets",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Génère captures d'écran et icônes des projets GitHub Pages pour l'appli Mes projets",
+  "scripts": {
+    "build:projects": "node scripts/build-projects.mjs"
+  },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "playwright": "^1.49.0",
+    "sharp": "^0.33.5"
+  }
+}

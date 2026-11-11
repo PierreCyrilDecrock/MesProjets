@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="description" content="Lance rapidement tous mes projets GitHub Pages.">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mes projets">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<title>Mes projets</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #14161a; --muted: #6b7280;
+    --line: #e5e7eb; --accent: #4f46e5; --accent-soft: #eef0ff; --star: #f59e0b;
+    --radius: 16px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1115; --card: #181b21; --text: #eceef2; --muted: #9aa3b2;
+      --line: #262a33; --accent: #8b93ff; --accent-soft: #232650; --star: #fbbf24;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { color-scheme: light dark; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  header {
+    position: sticky; top: 0; z-index: 5;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .bar { display: flex; align-items: center; gap: 8px; max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0; flex: 1; letter-spacing: -.01em; }
+  h1 small { display: block; font-size: 12px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); display: grid; place-items: center;
+    font-size: 18px; cursor: pointer;
+  }
+  .icon-btn:active { transform: scale(.94); }
+  .icon-btn.spin svg { animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .search { max-width: 720px; margin: 10px auto 0; }
+  .search input {
+    width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--card); color: var(--text); padding: 0 14px; font-size: 16px; outline: none;
+  }
+  .search input:focus { border-color: var(--accent); }
+  main { max-width: 720px; margin: 0 auto; padding: 14px 16px 40px; }
+  .status { color: var(--muted); font-size: 13px; margin: 2px 2px 12px; }
+  .status.warn { color: #b45309; }
+  @media (prefers-color-scheme: dark) { .status.warn { color: #fbbf24; } }
+  .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 18px 2px 8px; }
+  .grid { display: grid; gap: 10px; }
+  @media (min-width: 620px) { .grid { grid-template-columns: 1fr 1fr; } }
+  .card {
+    position: relative; display: flex; align-items: stretch; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  }
+  .card:active { background: var(--accent-soft); }
+  .card a.main {
+    flex: 1; min-width: 0; padding: 14px 4px 14px 16px; color: inherit; text-decoration: none;
+    display: block;
+  }
+  .name { font-weight: 650; font-size: 17px; display: flex; align-items: center; gap: 6px; }
+  .name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ext { color: var(--accent); flex: none; font-size: 14px; }
+  .desc { color: var(--muted); font-size: 14px; margin-top: 3px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .meta { color: var(--muted); font-size: 12px; margin-top: 8px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 1px 8px; }
+  .star {
+    flex: none; width: 52px; border: 0; background: none; color: var(--muted);
+    font-size: 22px; cursor: pointer;
+  }
+  .star.on { color: var(--star); }
+  .tile, .shot { position: relative; overflow: hidden; display: grid; place-items: center; color: #fff; font-weight: 700; flex: none; }
+  .tile { width: 48px; height: 48px; border-radius: 12px; font-size: 18px; }
+  .shot { aspect-ratio: 16 / 9; width: 100%; font-size: 40px; }
+  .tile img, .shot img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .25s; }
+  .tile img { object-fit: contain; padding: 5px; background: #fff; }
+  .shot img { object-fit: cover; }
+  .tile.thumb img { object-fit: cover; padding: 0; }
+  img.ok { opacity: 1; }
+  .link { background: none; border: 0; color: var(--accent); font: inherit; text-decoration: underline; padding: 0 0 0 6px; cursor: pointer; }
+  .card a.main.row { display: flex; gap: 12px; align-items: center; }
+  .body { flex: 1; min-width: 0; }
+  .card.preview a.main { padding: 0; }
+  .card.preview .body { padding: 12px 16px 14px; }
+  .card.preview .star { position: absolute; top: 8px; right: 8px; width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(0,0,0,.5); color: #fff; font-size: 20px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .card.preview .star.on { color: var(--star); }
+  dialog select { width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); padding: 0 10px; font-size: 16px; }
+  .hint { font-size: 12px; color: var(--muted); margin: 6px 0 0; }
+  .empty { text-align: center; color: var(--muted); padding: 48px 12px; }
+  .skeleton { height: 86px; border-radius: var(--radius); background: linear-gradient(90deg, var(--card), var(--line), var(--card)); background-size: 200% 100%; animation: sh 1.2s infinite; }
+  @keyframes sh { to { background-position: -200% 0; } }
+  footer { text-align: center; font-size: 12px; color: var(--muted); padding: 8px 16px 28px; }
+  footer a { color: var(--muted); }
+  /* feuille de réglages */
+  dialog { border: 0; border-radius: 20px 20px 0 0; padding: 20px 16px calc(20px + env(safe-area-inset-bottom));
+    width: 100%; max-width: 720px; margin: auto auto 0; background: var(--card); color: var(--text); }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog h2 { margin: 0 0 12px; font-size: 18px; }
+  dialog label { font-size: 13px; color: var(--muted); display: block; margin: 12px 0 4px; }
+  dialog input[type=text] { width: 100%; height: 44px; border-radius: 12px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--text); padding: 0 12px; font-size: 16px; }
+  .row { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 15px; }
+  .actions { display: flex; gap: 8px; margin-top: 18px; }
+  .btn { flex: 1; height: 44px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg);
+    color: var(--text); font-size: 16px; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Mes projets <small id="who"></small></h1>
+    <button class="icon-btn" id="refresh" aria-label="Actualiser" title="Actualiser">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+    </button>
+    <button class="icon-btn" id="settings" aria-label="Réglages" title="Réglages">⚙︎</button>
+  </div>
+  <div class="search"><input id="q" type="search" placeholder="Rechercher un projet…" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+</header>
+
+<main>
+  <div id="status" class="status"></div>
+  <div id="list"></div>
+</main>
+<footer>Un tap ouvre le projet dans un nouvel onglet · ★ pour épingler en haut</footer>
+
+<dialog id="dlg">
+  <h2>Réglages</h2>
+  <div id="userBlock">
+    <label for="user">Compte GitHub</label>
+    <input id="user" type="text" autocapitalize="off" autocomplete="off" spellcheck="false">
+  </div>
+  <label for="view">Affichage</label>
+  <select id="view">
+    <option value="list">Liste simple</option>
+    <option value="icons">Avec icônes</option>
+    <option value="previews">Avec aperçus</option>
+  </select>
+  <p class="hint">Icônes et aperçus sont lus sur les sites eux-mêmes (favicon, image de partage). À défaut : la carte de partage GitHub (aperçus) ou les initiales du projet.</p>
+  <div class="row"><input id="showAll" type="checkbox"><label for="showAll" style="margin:0;color:inherit">Afficher aussi les dépôts sans GitHub Pages</label></div>
+  <div class="row"><input id="showForks" type="checkbox"><label for="showForks" style="margin:0;color:inherit">Inclure les forks</label></div>
+  <div class="actions">
+    <button class="btn" id="cancel">Annuler</button>
+    <button class="btn primary" id="save">Enregistrer</button>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---- Configuration -------------------------------------------------------
+  const DEFAULT_USER = 'PierreCyrilDecrock';
+  const CACHE_TTL = 60 * 60 * 1000; // 1 h (l'API non authentifiée est limitée à 60 requêtes/h)
+
+  // Instantané de secours : utilisé uniquement si l'API est injoignable et qu'aucun cache n'existe.
+  const FALLBACK = ['SecteurImmo','Lumen','Recette','DashboardHomepage','Maison3D','Ruban',
+    'BrickSurvivor','Alibi','Parcellaire','ConfigurateurBagage','Floralis','NeonWave'];
+
+  // ---- Stockage (tolérant aux erreurs) -------------------------------------
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+
+  const params = new URLSearchParams(location.search);
+  const storedUser = store.get('user', null);
+  const state = {
+    source: 'api',
+    userExplicit: !!params.get('user') || (!!storedUser && storedUser.toLowerCase() !== DEFAULT_USER.toLowerCase()),
+    user: (params.get('user') || store.get('user', DEFAULT_USER)).trim(),
+    showAll: store.get('showAll', false),
+    showForks: store.get('showForks', false),
+    view: store.get('view', 'list'),
+    favs: new Set(store.get('favs', [])),
+    repos: [],
+    stale: false,
+    unverified: false,
+    query: ''
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+
+  // ---- Données -------------------------------------------------------------
+  function pagesUrl(r, owner) {
+    const home = (r.homepage || '').trim();
+    if (/^https?:\/\//i.test(home) && /github\.io/i.test(home)) return home;
+    const host = owner.toLowerCase() + '.github.io';
+    if (r.name.toLowerCase() === host) return `https://${host}/`;
+    return `https://${host}/${r.name}/`;
+  }
+
+  function normalize(raw, owner) {
+    return raw.map(r => ({
+      name: r.name,
+      description: r.description || '',
+      pushed: r.pushed_at || null,
+      hasPages: !!r.has_pages,
+      fork: !!r.fork,
+      archived: !!r.archived,
+      lang: r.language || '',
+      url: pagesUrl(r, owner),
+      repoUrl: r.html_url
+    }));
+  }
+
+  const appError = (msg) => Object.assign(new Error(msg), { app: true });
+
+  // Message lisible pour une erreur réseau (Safari écrit « Load failed », Chrome « Failed to fetch »).
+  function explain(e) {
+    if (e && e.app) return e.message;
+    const detail = (e && e.message) || 'réseau';
+    if (location.protocol === 'file:' || location.origin === 'null')
+      return `Impossible de joindre GitHub depuis cet aperçu (${detail}). Ouvre la page à son adresse https://…github.io.`;
+    return `Impossible de joindre GitHub (${detail}).`;
+  }
+
+  async function fetchAll(owner) {
+    let all = [];
+    for (let page = 1; page <= 5; page++) {
+      const res = await fetch(`https://api.github.com/users/${encodeURIComponent(owner)}/repos?per_page=100&sort=pushed&page=${page}`);
+      if (res.status === 404) throw appError(`Compte « ${owner} » introuvable.`);
+      if (res.status === 403 || res.status === 429) throw appError('Limite de requêtes GitHub atteinte, réessaie plus tard.');
+      if (!res.ok) throw appError(`Erreur GitHub (${res.status}).`);
+      const chunk = await res.json();
+      all = all.concat(chunk);
+      if (chunk.length < 100) break;
+    }
+    return normalize(all, owner);
+  }
+
+  // projects.json est produit par l'Action GitHub (voir README) : liste + captures + icônes, servis par ce même site.
+  async function loadFile(force) {
+    const res = await fetch('projects.json', { cache: force ? 'reload' : 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (!data || !Array.isArray(data.projects)) throw new Error('format');
+    return data;
+  }
+
+  async function load(force) {
+    state.unverified = false;
+    if (!state.repos.length) showSkeleton();
+    $('refresh').classList.add('spin');
+    try {
+      // 1) Source préférée : projects.json (aucun appel à l'API GitHub depuis le navigateur)
+      try {
+        const data = await loadFile(force);
+        if (!state.userExplicit || String(data.user).toLowerCase() === state.user.toLowerCase()) {
+          state.source = 'file'; state.user = data.user;
+          state.repos = data.projects; state.stale = false; state.error = '';
+          state.cachedAt = Date.parse(data.generatedAt) || 0;
+          return;
+        }
+      } catch { /* pas de projects.json : repli sur l'API */ }
+
+      // 2) Repli : API publique GitHub (avec cache d'1 h)
+      state.source = 'api';
+      const key = 'cache:' + state.user.toLowerCase();
+      const cached = store.get(key, null);
+      if (cached && !force && Date.now() - cached.t < CACHE_TTL) {
+        state.repos = cached.repos; state.stale = false; state.error = ''; state.cachedAt = cached.t; return;
+      }
+      try {
+        const repos = await fetchAll(state.user);
+        store.set(key, { t: Date.now(), repos });
+        state.repos = repos; state.stale = false; state.cachedAt = Date.now(); state.error = '';
+      } catch (e) {
+        state.error = explain(e);
+        if (cached) { state.repos = cached.repos; state.stale = true; state.cachedAt = cached.t; }
+        else if (state.user.toLowerCase() === DEFAULT_USER.toLowerCase()) {
+          state.repos = normalize(FALLBACK.map(n => ({ name: n, has_pages: true })), state.user);
+          state.unverified = true;
+        } else state.repos = [];
+      }
+    } finally {
+      $('refresh').classList.remove('spin');
+      render();
+    }
+  }
+
+  // ---- Rendu ---------------------------------------------------------------
+  const rtf = new Intl.RelativeTimeFormat('fr', { numeric: 'auto' });
+  function ago(iso) {
+    if (!iso) return '';
+    const s = (new Date(iso) - Date.now()) / 1000;
+    const units = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60]];
+    for (const [u, n] of units) if (Math.abs(s) >= n) return rtf.format(Math.round(s / n), u);
+    return 'à l’instant';
+  }
+
+  function showSkeleton() {
+    const list = $('list'); list.replaceChildren();
+    const g = el('div', 'grid');
+    for (let i = 0; i < 6; i++) g.append(el('div', 'skeleton'));
+    list.append(g);
+  }
+
+  // ---- Icônes et aperçus (optionnels) --------------------------------------
+  const META_TTL = 7 * 864e5, META_FAIL_TTL = 864e5;
+  const metaCache = store.get('meta', {});
+  const queue = new Map(); let active = 0;
+
+  const getMeta = (r) => { const m = metaCache[r.url]; return m && Date.now() - m.t < (m.fail ? META_FAIL_TTL : META_TTL) ? m : null; };
+
+  // Lit la page du projet (GitHub Pages autorise la lecture depuis un autre site) pour trouver son icône et son image de partage.
+  async function fetchMeta(r) {
+    const out = { t: Date.now(), icon: '', og: '' };
+    try {
+      const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 8000);
+      const res = await fetch(r.url, { signal: ctl.signal }); clearTimeout(to);
+      if (!res.ok) throw new Error(String(res.status));
+      const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+      const abs = (h) => { try { const u = new URL(h, res.url || r.url); return (u.protocol === 'https:' || (u.protocol === 'data:' && u.href.startsWith('data:image/'))) ? u.href : ''; } catch { return ''; } };
+      const og = doc.querySelector('meta[property="og:image"], meta[name="og:image"], meta[name="twitter:image"], meta[property="twitter:image"]');
+      if (og) out.og = abs(og.getAttribute('content') || '');
+      let best = 0;
+      doc.querySelectorAll('link[rel~="icon"], link[rel~="apple-touch-icon"], link[rel~="apple-touch-icon-precomposed"]').forEach(l => {
+        const href = abs(l.getAttribute('href') || ''); if (!href) return;
+        const rel = (l.getAttribute('rel') || '').toLowerCase(), sizes = l.getAttribute('sizes') || '';
+        let score = /apple-touch-icon/.test(rel) ? 1000 : 0;
+        score += (/any/.test(sizes) || /svg/.test(l.getAttribute('type') || '') || /\.svg(\?|$)/.test(href)) ? 500 : (parseInt(sizes, 10) || 32);
+        if (score > best) { best = score; out.icon = href; }
+      });
+    } catch { out.fail = true; }
+    metaCache[r.url] = out; store.set('meta', metaCache);
+    return out;
+  }
+
+  function withMeta(r, cb) {
+    const m = getMeta(r);
+    if (m) { cb(m); return; }
+    if (queue.has(r.url)) { queue.get(r.url).cbs.push(cb); return; }
+    queue.set(r.url, { r, cbs: [cb], started: false });
+    pump();
+  }
+  function pump() {
+    for (const job of queue.values()) {
+      if (active >= 4) break;
+      if (job.started) continue;
+      job.started = true; active++;
+      fetchMeta(job.r).then(m => job.cbs.forEach(cb => cb(m))).finally(() => { queue.delete(job.r.url); active--; pump(); });
+    }
+  }
+
+  const hue = (name) => { let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360; return h; };
+  function initials(name) {
+    const w = name.match(/[A-Z]?[a-z]+|[A-Z]+(?![a-z])|\d+/g) || [name];
+    return (w.length > 1 ? w[0][0] + w[1][0] : name.slice(0, 2)).toUpperCase();
+  }
+  function placeholder(host, name) {
+    const h = hue(name);
+    host.style.background = `linear-gradient(135deg, hsl(${h} 70% 55%), hsl(${(h + 45) % 360} 70% 42%))`;
+    host.append(el('span', '', initials(name)));
+  }
+  // Essaie chaque URL à tour de rôle ; si aucune ne charge, les initiales restent visibles.
+  function setImg(host, urls) {
+    let i = 0; const img = new Image();
+    img.alt = ''; img.loading = 'lazy'; img.decoding = 'async'; img.referrerPolicy = 'no-referrer';
+    const next = () => { if (i >= urls.length) img.remove(); else img.src = urls[i++]; };
+    img.onerror = next;
+    img.onload = () => { img.classList.add('ok'); if (host.classList.contains('tile') && !host.classList.contains('thumb')) host.style.background = '#fff'; };
+    host.append(img); next();
+  }
+
+  function card(r) {
+    const view = state.view;
+    const c = el('div', 'card' + (view === 'previews' ? ' preview' : ''));
+    const a = el('a', 'main' + (view === 'icons' ? ' row' : ''));
+    const body = el('div', 'body');
+    a.href = r.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+    const name = el('div', 'name');
+    name.append(el('span', '', r.name), el('span', 'ext', '↗'));
+    body.append(name);
+    if (r.description) body.append(el('div', 'desc', r.description));
+    const meta = el('div', 'meta');
+    if (r.lang) meta.append(el('span', 'tag', r.lang));
+    if (!r.hasPages) meta.append(el('span', '', 'sans Pages'));
+    if (r.fork) meta.append(el('span', '', 'fork'));
+    if (r.archived) meta.append(el('span', '', 'archivé'));
+    if (r.pushed) meta.append(el('span', '', 'màj ' + ago(r.pushed)));
+    body.append(meta);
+    if (view === 'icons') {
+      const tile = el('div', 'tile'); placeholder(tile, r.name);
+      a.append(tile, body);
+      if (r.icon) { if (r.iconKind === 'thumbnail') tile.classList.add('thumb'); setImg(tile, [r.icon]); }
+      else withMeta(r, m => { if (m.icon) setImg(tile, [m.icon]); });
+    } else if (view === 'previews') {
+      const shot = el('div', 'shot'); placeholder(shot, r.name);
+      a.append(shot, body);
+      const gh = `https://opengraph.githubassets.com/1/${state.user}/${r.name}`;
+      if (r.shot) setImg(shot, [r.shot, gh]);
+      else withMeta(r, m => setImg(shot, [m.og, gh].filter(Boolean)));
+    } else a.append(body);
+    const star = el('button', 'star' + (state.favs.has(r.name) ? ' on' : ''), state.favs.has(r.name) ? '★' : '☆');
+    star.setAttribute('aria-label', 'Épingler ' + r.name);
+    star.addEventListener('click', () => {
+      state.favs.has(r.name) ? state.favs.delete(r.name) : state.favs.add(r.name);
+      store.set('favs', [...state.favs]); render();
+    });
+    c.append(a, star);
+    return c;
+  }
+
+  function render() {
+    $('who').textContent = '@' + state.user;
+    const q = state.query.trim().toLowerCase();
+    let items = state.repos.filter(r =>
+      (state.showAll || r.hasPages) && (state.showForks || !r.fork) &&
+      (!q || r.name.toLowerCase().includes(q) || r.description.toLowerCase().includes(q)));
+    items.sort((a, b) => (b.pushed || '').localeCompare(a.pushed || '') || a.name.localeCompare(b.name));
+
+    const st = $('status'); st.className = 'status'; st.replaceChildren();
+    const retry = () => { const b = el('button', 'link', 'Réessayer'); b.addEventListener('click', () => load(true)); return b; };
+    if (state.unverified) { st.classList.add('warn'); st.append((state.error || '') + ' Liste de secours : les liens ne sont pas vérifiés.', retry()); }
+    else if (state.stale) { st.classList.add('warn'); st.append((state.error || '') + ' Données du cache affichées.', retry()); }
+    else st.textContent = `${items.length} projet${items.length > 1 ? 's' : ''}` + (state.cachedAt ? ' · mis à jour ' + ago(new Date(state.cachedAt).toISOString()) : '');
+
+    const list = $('list'); list.replaceChildren();
+    if (!items.length) {
+      list.append(el('div', 'empty', state.error && !state.repos.length ? state.error : q ? 'Aucun résultat.' : 'Aucun dépôt avec GitHub Pages.'));
+      return;
+    }
+    const favs = items.filter(r => state.favs.has(r.name));
+    const rest = items.filter(r => !state.favs.has(r.name));
+    const section = (title, arr) => {
+      if (title) list.append(el('div', 'section-title', title));
+      const g = el('div', 'grid'); arr.forEach(r => g.append(card(r))); list.append(g);
+    };
+    if (favs.length) { section('Épinglés', favs); if (rest.length) section('Tous', rest); }
+    else section(null, rest);
+  }
+
+  // ---- Événements ----------------------------------------------------------
+  $('q').addEventListener('input', e => { state.query = e.target.value; render(); });
+  $('refresh').addEventListener('click', () => load(true));
+
+  const dlg = $('dlg');
+  $('settings').addEventListener('click', () => {
+    $('user').value = state.user; $('showAll').checked = state.showAll; $('showForks').checked = state.showForks; $('view').value = state.view;
+    $('userBlock').hidden = state.source === 'file';
+    dlg.showModal();
+  });
+  $('cancel').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+  $('save').addEventListener('click', () => {
+    const u = state.source === 'file' ? state.user : ($('user').value.trim() || DEFAULT_USER);
+    const changed = u !== state.user;
+    if (changed) state.userExplicit = true;
+    state.user = u; state.showAll = $('showAll').checked; state.showForks = $('showForks').checked; state.view = $('view').value;
+    store.set('user', u); store.set('showAll', state.showAll); store.set('showForks', state.showForks); store.set('view', state.view);
+    dlg.close();
+    if (changed) { state.repos = []; state.error = ''; load(false); } else render();
+  });
+
+  load(false);
+
+  // Mode hors ligne / installation
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+})();
+</script>
+</body>
+</html>
