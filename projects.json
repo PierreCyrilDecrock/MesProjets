@@ -1,20 +1,20 @@
 {
-  "generatedAt": "2026-11-13T13:06:11.017Z",
+  "generatedAt": "2026-11-14T12:10:47.775Z",
   "user": "PierreCyrilDecrock",
   "projects": [
     {
       "name": "Prenoms",
       "description": "",
-      "pushed": "2026-11-13T09:35:40Z",
+      "pushed": "2026-11-13T21:47:11Z",
       "hasPages": true,
       "fork": false,
       "archived": false,
       "lang": "TypeScript",
       "url": "https://pierrecyrildecrock.github.io/Prenoms/",
       "repoUrl": "https://github.com/PierreCyrilDecrock/Prenoms",
-      "shot": "shots/Prenoms.jpg?v=1794562540",
-      "icon": "icons/projects/Prenoms.png?v=1794562540",
-      "iconKind": "thumbnail"
+      "shot": "shots/Prenoms.jpg?v=1794606431",
+      "icon": "icons/projects/Prenoms.png?v=1794606431",
+      "iconKind": "site"
     },
     {
       "name": "SecteurImmo",
