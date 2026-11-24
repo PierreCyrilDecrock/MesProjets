@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-11-23T15:57:36.849Z",
+  "generatedAt": "2026-11-24T15:52:14.505Z",
   "user": "PierreCyrilDecrock",
   "projects": [
     {
       "name": "ImmoCRM",
       "description": "",
-      "pushed": "2026-11-23T14:11:14Z",
+      "pushed": "2026-11-24T15:30:43Z",
       "hasPages": true,
       "fork": false,
       "archived": false,
       "lang": "TypeScript",
       "url": "https://pierrecyrildecrock.github.io/ImmoCRM/",
       "repoUrl": "https://github.com/PierreCyrilDecrock/ImmoCRM",
-      "shot": "shots/ImmoCRM.jpg?v=1795443074",
-      "icon": "icons/projects/ImmoCRM.png?v=1795443074",
+      "shot": "shots/ImmoCRM.jpg?v=1795534243",
+      "icon": "icons/projects/ImmoCRM.png?v=1795534243",
       "iconKind": "site"
     },
     {
